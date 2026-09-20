@@ -1,0 +1,24 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Artefactos de PyInstaller
+build/
+dist/
+*.spec
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+
+# Icono generado por el build (se recrea desde assets/rika-icon.jpg)
+assets/kick.ico
+
+# Configuracion local y registros
+config.json
+*.log
+
+# Sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
