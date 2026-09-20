@@ -95,17 +95,28 @@ class SettingsWindow:
         ttk.Button(actions, text="Guardar", command=self.save).grid(row=0, column=2, padx=(8, 0))
 
         self.root.update_idletasks()
+        self._fit_window(center=True)
+
+    def _fit_window(self, center: bool = False) -> None:
+        self.root.update_idletasks()
         width = max(self.root.winfo_reqwidth(), 400)
         height = self.root.winfo_reqheight()
-        x = max(0, (self.root.winfo_screenwidth() - width) // 2)
-        y = max(0, (self.root.winfo_screenheight() - height) // 3)
-        self.root.geometry(f"{width}x{height}+{x}+{y}")
+        if center:
+            x = max(0, (self.root.winfo_screenwidth() - width) // 2)
+            y = max(0, (self.root.winfo_screenheight() - height) // 3)
+            self.root.geometry(f"{width}x{height}+{x}+{y}")
+        else:
+            self.root.geometry(f"{width}x{height}")
 
     def set_status(self, text: str, error: bool = False, muted: bool = False) -> None:
         self.status_var.set(text)
         color = ERROR_COLOR if error else (MUTED_COLOR if muted else OK_COLOR)
         try:
             self.status_label.configure(foreground=color)
+        except Exception:
+            pass
+        try:
+            self._fit_window()
         except Exception:
             pass
 
@@ -136,7 +147,10 @@ class SettingsWindow:
             client.close()
 
         if info.live:
-            message = f"Canal '{info.username}' encontrado y EN VIVO ahora: {info.title}"
+            title = info.title or ""
+            if len(title) > 90:
+                title = title[:87].rstrip() + "..."
+            message = f"Canal '{info.username}' encontrado y EN VIVO ahora: {title}"
         else:
             message = f"Canal '{info.username}' encontrado. Ahora mismo esta offline"
         self.events.put(("status", (message, False, False)))
